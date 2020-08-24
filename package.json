@@ -13,6 +13,10 @@
     "type": "git",
     "url": "git@github.com:mindwards/ts-decoder.git"
   },
+  "bugs": {
+    "url": "https://github.com/mindwards/ts-decoder/issues"
+  },
+  "homepage": "https://github.com/mindwards/ts-decoder",
   "author": "Hernán Pentimalli <h.pentimalli+tsdecoder@gmail.com>",
   "keywords": [
     "typescript",
