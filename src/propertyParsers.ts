@@ -3,12 +3,12 @@ import { Decoder } from './decoder';
 import { DecodeOptions } from './decodeOptions';
 import { DecodeArrayOptions } from './decodeArrayOptions';
 import {
-  numberDecoderFactory,
-  stringDecoderFactory,
-  booleanDecoderFactory,
-  arrayDecoderFactory,
-  dateDecoderFactory,
-} from './baseTypesFactories';
+  decodeNumber,
+  decodeString,
+  decodeBoolean,
+  decodeDate,
+} from './baseDecoders';
+import { decodeArray } from './decodeArray';
 
 export enum PropertyTypes {
   String = 'string',
@@ -27,13 +27,13 @@ export const parseProperty = (source: any, entityName: string) => (name: string,
 
     switch (type) {
       case PropertyTypes.String:
-        return stringDecoderFactory(options)(value);
+        return decodeString(options)(value);
       case PropertyTypes.Boolean:
-        return booleanDecoderFactory(options)(value);
+        return decodeBoolean(options)(value);
       case PropertyTypes.Number:
-        return numberDecoderFactory(options)(value);
+        return decodeNumber(options)(value);
       case PropertyTypes.Date:
-        return dateDecoderFactory(options)(value);
+        return decodeDate(options)(value);
       default:
         throw new DecodeError(`Unknow field type ${type} for ${entityName}.${name}.`);
     }
@@ -60,7 +60,7 @@ export const parseArrayField = (
   try {
     const value = source[name];
 
-    return arrayDecoderFactory<T>(itemDecoder, options)(value);
+    return decodeArray<T>(itemDecoder, options)(value);
   } catch (e) {
     if (DecodeError.isDecodeError(e)) {
       throw new DecodeError(`Error in ${entityName}.${name}}. Data: ${JSON.stringify(source)}`, e);
