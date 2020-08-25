@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/ts-mocha -p ./tsconfig.json src/**/*.test.ts",
     "build": "./node_modules/.bin/tsc",
     "link": "npm run build && cd dist && npm link"
   },
@@ -24,6 +24,14 @@
     "typesafe"
   ],
   "devDependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/chai-datetime": "^0.0.33",
+    "@types/mocha": "^8.0.3",
+    "chai": "^4.2.0",
+    "chai-datetime": "^1.7.0",
+    "mocha": "^8.1.1",
+    "ts-mocha": "^7.0.0",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   }
 }

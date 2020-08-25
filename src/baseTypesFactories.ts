@@ -9,16 +9,32 @@ import { ParsePropertyOptions, ParseArrayOptions } from './parsePropertyOptions'
  * @throws a {@link DecoderError} if the value is incompatible with the options
  * @returns True if value should be returned as is
  */
-const testOptions = (value: any, options?: ParsePropertyOptions): boolean => {
-  if (value === undefined && !options?.optional && !options?.force) {
+export const testOptions = (value: any, options?: ParsePropertyOptions): boolean => {
+  if (value === undefined) {
+    if (options?.optional) {
+      return true;
+    }
+
+    if (options?.force) {
+      return false;
+    }
+
     throw new DecodeError('Field is required but not present');
   }
 
-  if (value === null && !options?.nullable && !options?.force) {
+  if (value === null) {
+    if (options?.nullable) {
+      return true;
+    }
+
+    if (options?.force) {
+      return false;
+    }
+
     throw new DecodeError('Field is null but no nullable was specified');
   }
 
-  return !options?.force && value == null;
+  return false;
 };
 
 export const numberDecoderFactory = (options?: ParsePropertyOptions): Decoder<number> => value => {
@@ -26,34 +42,36 @@ export const numberDecoderFactory = (options?: ParsePropertyOptions): Decoder<nu
     return value;
   }
 
-  if (!options?.force && typeof value !== 'number') {
-    console.log({ options });
+  if (typeof value !== 'number') {
+    if (options?.force) {
+      const parsed = parseFloat(value);
+      if (isNaN(parsed)) {
+        throw new DecodeError('Field is not a valid number');
+      }
+      return parsed;      
+    }
+
     throw new DecodeError('Field is not a valid number');
   }
 
-  if (options?.force) {
-    const parsed = parseFloat(value);
-    if (isNaN(parsed)) {
-      throw new DecodeError('Field is not a valid number');
-    }
-    return parsed;
-  } else {
-    return value;
-  }
+  return value;
 };
 
 export const stringDecoderFactory = (options?: ParsePropertyOptions): Decoder<string> => value => {
   if (testOptions(value, options)) {
     return value;
-  } 
-  
-  const force = !!options?.force;
-  if (!force && typeof value !== 'string') {
-    throw new DecodeError('Field is not a valid string');
   }
 
-  if (force) {
-    return String(value);
+  if (typeof value !== 'string') {
+    if (options?.force) {
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+  
+      return String(value);    
+    }
+  
+    throw new DecodeError('Field is not a valid string');
   }
 
   return value;
@@ -64,32 +82,53 @@ export const booleanDecoderFactory = (options?: ParsePropertyOptions): Decoder<b
     return value;
   }
 
-  const force = !!options?.force;
-  if (!force && typeof value !== 'boolean') {
-    throw new DecodeError('Field is not a valid boolean');
-  }
-
-  if (force) {
-    const strval = String(value);
-    if (strval === 'false' || strval === 'true') {
-      return strval === 'true';
+  if (typeof value !== 'boolean') {
+    if (options?.force) {
+      const strval = String(value).toLowerCase();
+      if (strval === 'true') {
+        return true;
+      }
+  
+      if (strval === 'false' || strval === '0') {
+        return false;
+      }
+  
+      return !!value;    
     }
-    return  !!value;
+  
+    throw new DecodeError('Field is not a valid boolean');
   }
 
   return value;
 };
 
 export const dateDecoderFactory = (options?: ParsePropertyOptions): Decoder<Date> => value => {
-  if (!testOptions(value, options) && typeof value !== 'string' && typeof value !== 'number') {
-    throw new DecodeError('Field is not a valid ISO or timestamp date');
+  if (testOptions(value, options)) {
+    return value;
   }
-  let date = new Date(value);
-  if (!(date instanceof Date)
-    || isNaN(date as any as number)) {
-    throw new DecodeError('Field is not a valid ISO or timestamp date');
+
+  if (!(value instanceof Date)) {
+    if (options?.force) {
+      let date = new Date(value);
+      if (!(date instanceof Date)
+        || isNaN(date as any as number)) {
+
+        // Try parsing the input as number
+        date = new Date(parseInt(value));
+
+        if (!(date instanceof Date)
+        || isNaN(date as any as number)) {
+          throw new DecodeError('Field is not a valid ISO or timestamp date');
+        }
+      }
+
+      return date;
+    }
+
+    throw new DecodeError('Field is not a Date object');
   }
-  return date;
+
+  return value;
 }
 
 /**
