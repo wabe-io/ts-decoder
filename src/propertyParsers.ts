@@ -9,6 +9,7 @@ import {
   decodeDate,
 } from './baseDecoders';
 import { decodeArray } from './decodeArray';
+import { testDecodeOptions } from './testDecodeOptions';
 
 export enum PropertyTypes {
   String = 'string',
@@ -17,8 +18,10 @@ export enum PropertyTypes {
   Date = 'date',
 }
 
-export const parseProperty = (source: any, entityName: string) => (name: string, type: PropertyTypes, options?: DecodeOptions): any => {
-  if (typeof source !== 'object' || Array.isArray(source)) {
+const isObjectLike = (value: any) => typeof value === 'object' && !Array.isArray(value);
+
+export const parseProperty2 = (source: any, entityName: string) => (name: string, type: PropertyTypes, options?: DecodeOptions): any => {
+  if (!isObjectLike(source)) {
     throw new DecodeError(`Can't convert source ${entityName} to object`);
   }
 
@@ -68,3 +71,35 @@ export const parseArrayField = (
     throw new DecodeError(`Uknown error in ${entityName}.${name}. }. Data: ${JSON.stringify(source)}. Error: ${e}`);
   }
 };
+
+export type PropertyDecoderHelper = <F>(name: string, decoder: Decoder<F>) => F;
+
+export const decodeProperty =  <T>(source: { [key: string]: any }, entityName: string): PropertyDecoderHelper => (name, decoder) => {
+  if (!isObjectLike(source)) {
+    throw new DecodeError(`Can't convert source ${entityName} to object`);
+  }
+
+  try {
+    const value = source[name];
+    return decoder(value);
+  } catch (e) {
+    if (DecodeError.isDecodeError(e)) {
+      throw new DecodeError(`Error in ${entityName}.${name}. Data: ${JSON.stringify(source)}`, e);
+    }
+    throw new DecodeError(`Uknown error in ${entityName}.${name}. }. Data: ${JSON.stringify(source)}. Error: ${e}`);
+  }
+};
+
+
+export const decodeObject = <T>(entityName: string, callback: (property: PropertyDecoderHelper) => T, options?: DecodeOptions): Decoder<T> => input => {
+  if (testDecodeOptions(input, options)) {
+    return input;
+  }
+
+  if (!isObjectLike(input)) {
+    throw new DecodeError(`Can't convert input ${entityName} to object`);
+  }
+
+
+  return callback(decodeProperty(input, entityName));
+}
