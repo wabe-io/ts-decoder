@@ -15,7 +15,7 @@ chai.use(chaidt);
 const expect = chai.expect;
 
 describe('module', () => {
-  it('can parse a simple json document', () => {
+  it('can decode a simple json document', () => {
     type MockObj = {
       someNumber: number;
       someString: string;

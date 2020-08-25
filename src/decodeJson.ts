@@ -14,7 +14,7 @@ export const fromJson = <T>(objectDecoder: Decoder<T>, options?: DecodeOptions):
     return objectDecoder(obj);
   } catch (e) {
     throw new DecodeError(
-      `Can't parse input json: ${e}`,
+      `Can't decode input json: ${e}`,
       DecodeError.isDecodeError(e) ? e : undefined,
     );
   }
