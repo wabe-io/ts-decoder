@@ -1,6 +1,7 @@
 import { DecodeError } from './decodeError';
 import { Decoder } from './decoder';
-import { ParsePropertyOptions, ParseArrayOptions } from './parsePropertyOptions';
+import { DecodeOptions } from './decodeOptions';
+import { DecodeArrayOptions } from './decodeArrayOptions';
 import {
   numberDecoderFactory,
   stringDecoderFactory,
@@ -16,7 +17,7 @@ export enum PropertyTypes {
   Date = 'date',
 }
 
-export const parseProperty = (source: any, entityName: string) => (name: string, type: PropertyTypes, options?: ParsePropertyOptions): any => {
+export const parseProperty = (source: any, entityName: string) => (name: string, type: PropertyTypes, options?: DecodeOptions): any => {
   if (typeof source !== 'object' || Array.isArray(source)) {
     throw new DecodeError(`Can't convert source ${entityName} to object`);
   }
@@ -50,7 +51,7 @@ export const parseArrayField = (
 ) => <T>(
   name: string,
   itemDecoder: Decoder<T>,
-  options?: ParseArrayOptions,
+  options?: DecodeArrayOptions,
 ): T[] => {
   if (typeof source !== 'object' || Array.isArray(source)) {
     throw new DecodeError(`Can't convert source ${entityName} to object`);

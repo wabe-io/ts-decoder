@@ -1,15 +1,16 @@
 import { DecodeError } from './decodeError';
 import { Decoder } from './decoder';
-import { ParsePropertyOptions, ParseArrayOptions } from './parsePropertyOptions';
+import { DecodeOptions } from './decodeOptions';
+import { DecodeArrayOptions } from './decodeArrayOptions';
 
 /**
- * Test ParsePropertyOptions against a given value.
+ * Test DecodeOptions against a given value.
  * @param value The value to check
  * @param options Options to test
  * @throws a {@link DecoderError} if the value is incompatible with the options
  * @returns True if value should be returned as is
  */
-export const testOptions = (value: any, options?: ParsePropertyOptions): boolean => {
+export const testOptions = (value: any, options?: DecodeOptions): boolean => {
   if (value === undefined) {
     if (options?.optional) {
       return true;
@@ -37,7 +38,7 @@ export const testOptions = (value: any, options?: ParsePropertyOptions): boolean
   return false;
 };
 
-export const numberDecoderFactory = (options?: ParsePropertyOptions): Decoder<number> => value => {
+export const numberDecoderFactory = (options?: DecodeOptions): Decoder<number> => value => {
   if (testOptions(value, options)) {
     return value;
   }
@@ -57,7 +58,7 @@ export const numberDecoderFactory = (options?: ParsePropertyOptions): Decoder<nu
   return value;
 };
 
-export const stringDecoderFactory = (options?: ParsePropertyOptions): Decoder<string> => value => {
+export const stringDecoderFactory = (options?: DecodeOptions): Decoder<string> => value => {
   if (testOptions(value, options)) {
     return value;
   }
@@ -77,7 +78,7 @@ export const stringDecoderFactory = (options?: ParsePropertyOptions): Decoder<st
   return value;
 };
 
-export const booleanDecoderFactory = (options?: ParsePropertyOptions): Decoder<boolean> => value => {
+export const booleanDecoderFactory = (options?: DecodeOptions): Decoder<boolean> => value => {
   if (testOptions(value, options)) {
     return value;
   }
@@ -102,7 +103,7 @@ export const booleanDecoderFactory = (options?: ParsePropertyOptions): Decoder<b
   return value;
 };
 
-export const dateDecoderFactory = (options?: ParsePropertyOptions): Decoder<Date> => value => {
+export const dateDecoderFactory = (options?: DecodeOptions): Decoder<Date> => value => {
   if (testOptions(value, options)) {
     return value;
   }
@@ -137,17 +138,26 @@ export const dateDecoderFactory = (options?: ParsePropertyOptions): Decoder<Date
  */
 const isIterable = (obj: any): boolean => obj != null && typeof obj[Symbol.iterator] === 'function';
 
-export const arrayDecoderFactory = <T>(itemDecoder: Decoder<T>, options?: ParseArrayOptions): Decoder<T[]> => value => {
-  // Must be an array 
-  if (!testOptions(value, options) && !Array.isArray(value)) {
-    throw new DecodeError('Field is not an array');
+export const arrayDecoderFactory = <T>(itemDecoder: Decoder<T>, options?: DecodeArrayOptions): Decoder<T[]> => value => {
+  if (testOptions(value, options)) {
+    return value;
   }
 
-  return value.map((item: any) => {
+  let array: any[];
+
+  if (Array.isArray(value)) {
+    array = value;
+  } else  if (isIterable(value)) {
+    array = Array.from(value);
+  } else {
+    throw new DecodeError('Field is not an array or iterable');
+  }
+
+  return array.map((item: any) => {
     try {
       return itemDecoder(item);
     } catch (e) {
-      if (!!options?.requireAll || !DecodeError.isDecodeError(e)) {
+      if (options?.requireAll || !DecodeError.isDecodeError(e)) {
         throw e;
       }
 
