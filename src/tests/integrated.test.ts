@@ -9,6 +9,7 @@ import {
   decodeBoolean,
   decodeForcedDate,
   decodeString,
+  optional,
 } from '..';
 
 chai.use(chaidt);
@@ -40,5 +41,11 @@ describe('module', () => {
     }));
     const decoded = fromJson(decodeMock)(json);
     expect(decoded).to.be.eql(originalObj);
+  });
+
+  it('can decode an optional array', () => {
+    const array = [1,2,3];
+    const decoded = optional(decodeArray(decodeNumber))(array);
+    expect(decoded).to.eql(array);
   });
 });

@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import * as chai from 'chai';
 import * as chaidt from 'chai-datetime';
+import { identity } from 'ramda';
 import { decodeArray } from '../decodeArray';
 import { DecodeError } from '../decodeError';
 import { Decoder } from '../decoder';
@@ -10,8 +11,7 @@ const expect = chai.expect;
 
 describe('decodeArray', () => {
   it('can decode an homogeneous array', () => {
-    const mockDecoder = (input: number) => input;
-    const numberArrayDecoder = decodeArray(mockDecoder);
+    const numberArrayDecoder = decodeArray(identity);
     const testArray = [1,2,3,4];
     expect(numberArrayDecoder(testArray)).to.include.ordered.members(testArray);
   });
@@ -35,14 +35,12 @@ describe('decodeArray', () => {
       },
     }
 
-    const mockDecoder = (input: number) => input;
-    const numberArrayDecoder = decodeArray(mockDecoder);
+    const numberArrayDecoder = decodeArray(identity);
     expect(numberArrayDecoder(iterable)).to.include.ordered.members([1,2,3,4]);
   });
 
   it('can decode an homogeneous array requiring all', () => {
-    const mockDecoder: Decoder<number> = input => input;
-    const numberArrayDecoder = decodeArray(mockDecoder, { requireAll: true });
+    const numberArrayDecoder = decodeArray(identity, { requireAll: true });
     const testArray = [1,2,3,4];
     expect(numberArrayDecoder(testArray)).to.include.ordered.members(testArray);
   });
@@ -90,17 +88,15 @@ describe('decodeArray', () => {
     const mockDecoder: Decoder<number> = () => {
       throw new Error();
     };
-    expect(() => { decodeArray(mockDecoder, { requireAll: false, errorCollector: i => {} })([1]) }).to.throw();
+    expect(() => { decodeArray(mockDecoder, { requireAll: false, errorCollector: () => {} })([1]) }).to.throw();
   });
 
-  it('can decode an optional value', () => {
-    const mockDecoder: Decoder<number> = input => input;
-    expect(decodeArray(mockDecoder, { optional: true })(undefined)).to.be.undefined;
+  it('throws when undefined supplied', () => {
+    expect(() => { decodeArray(identity)(undefined) }).to.throw();
   });
 
-  it('can decode an null value', () => {
-    const mockDecoder: Decoder<number> = input => input;
-    expect(decodeArray(mockDecoder, { nullable: true })(null)).to.be.null;
+  it('throws when null supplied', () => {
+    expect(() => { decodeArray(identity)(null) }).to.throw();
   });
 });
 

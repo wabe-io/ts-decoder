@@ -1,6 +1,5 @@
 import { Decoder } from './decoder';
 import { DecodeArrayOptions } from './decodeArrayOptions';
-import { testDecodeOptions } from './testDecodeOptions';
 import { DecodeError } from './decodeError';
 
 /**
@@ -10,10 +9,6 @@ import { DecodeError } from './decodeError';
 const isIterable = (obj: any): boolean => obj != null && typeof obj[Symbol.iterator] === 'function';
 
 export const decodeArray = <T>(itemDecoder: Decoder<T>, options?: DecodeArrayOptions): Decoder<T[]> => value => {
-  if (testDecodeOptions(value, options)) {
-    return value;
-  }
-
   let array: any[];
 
   if (Array.isArray(value)) {

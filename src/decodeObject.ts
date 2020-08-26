@@ -23,7 +23,6 @@ export const decodeProperty =  (source: { [key: string]: any }, entityName: stri
   }
 };
 
-
 export const decodeObject = <T>(entityName: string, callback: (property: PropertyDecoderHelper) => T, options?: DecodeOptions): Decoder<T> => input => {
   if (testDecodeOptions(input, options)) {
     return input;

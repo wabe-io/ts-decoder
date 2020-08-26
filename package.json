@@ -1,6 +1,6 @@
 {
   "name": "ts-decoder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Typesafe decoder for TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,6 +27,7 @@
     "@types/chai": "^4.2.12",
     "@types/chai-datetime": "^0.0.33",
     "@types/mocha": "^8.0.3",
+    "@types/ramda": "^0.27.14",
     "chai": "^4.2.0",
     "chai-datetime": "^1.7.0",
     "mocha": "^8.1.1",

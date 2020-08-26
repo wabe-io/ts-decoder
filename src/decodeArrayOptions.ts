@@ -1,6 +1,4 @@
-import { DecodeOptions } from './decodeOptions';
-
-export type DecodeArrayOptions = DecodeOptions & {
+export type DecodeArrayOptions = {
   requireAll?: boolean;
   errorCollector?: (error: any) => void,
 }
