@@ -7,7 +7,7 @@ import {
   decodeNumber,
   decodeArray,
   decodeBoolean,
-  decodeDate,
+  decodeForcedDate,
   decodeString,
 } from '..';
 
@@ -32,11 +32,11 @@ describe('module', () => {
     };
     const json = JSON.stringify(originalObj);
     const decodeMock = decodeObject<MockObj>('MockEntity', properties => ({
-      someNumber: properties('someNumber', decodeNumber()),
-      someString: properties('someString', decodeString()),
-      someBoolean: properties('someBoolean', decodeBoolean()),
-      someDate: properties('someDate', decodeDate({ force: true })),
-      someArray: properties('someArray', decodeArray(decodeNumber())),
+      someNumber: properties('someNumber', decodeNumber),
+      someString: properties('someString', decodeString),
+      someBoolean: properties('someBoolean', decodeBoolean),
+      someDate: properties('someDate', decodeForcedDate),
+      someArray: properties('someArray', decodeArray(decodeNumber)),
     }));
     const decoded = fromJson(decodeMock)(json);
     expect(decoded).to.be.eql(originalObj);

@@ -1,15 +1,14 @@
-export class DecodeError extends Error {
+export class DecodeError {
   static TAG = 'DecodeError__';
 
+  message: string;
   innerError?: DecodeError;
   tag = DecodeError.TAG;
 
   constructor(message: string, innerError?: DecodeError) {
-    super(
-      innerError != null
-        ? `${message}. Inner error: ${innerError.message}`
-        : message,
-    );
+    this.message = innerError != null
+      ? `${message}. Inner error: ${innerError.message}`
+      : message;
     this.innerError = innerError;
   }
 

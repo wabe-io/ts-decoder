@@ -1,15 +1,13 @@
 import { DecodeError } from './decodeError';
 import { Decoder } from './decoder';
-import { DecodeOptions } from './decodeOptions';
-import { testDecodeOptions } from './testDecodeOptions';
 
-export const fromJson = <T>(objectDecoder: Decoder<T>, options?: DecodeOptions): Decoder<T> => stringInput => {
-  if (testDecodeOptions(stringInput, options)) {
-    return stringInput;
+export const fromJson = <T>(objectDecoder: Decoder<T>): Decoder<T> => input => {
+  if(typeof input !== 'string') {
+    throw new DecodeError('fromJson: input is not a string')
   }
 
   try {
-    const obj = JSON.parse(stringInput);
+    const obj = JSON.parse(input);
 
     return objectDecoder(obj);
   } catch (e) {

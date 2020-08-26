@@ -24,10 +24,12 @@ describe('decodeArray', () => {
         return {
           next: () => {
             const v = a.shift();
-            return {
-              done: v == null,
-              value: v,
-            };
+
+            if (v == null) {
+              return { done: true, value: undefined };
+            } else {
+              return { value: v };
+            }
           },
         };
       },
