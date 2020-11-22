@@ -39,3 +39,24 @@ export const matchingLiteralUnion = <T>(values: T[], decoder: Decoder<any>): Dec
 
   throw new DecodeError('Provided value was not in the list of possible literals');
 };
+
+export const decodeEnum = <T>(values: any[]): Decoder<T> => input => {
+  for (const value of values) {
+    if (value === input) {
+      return value as T;
+    }
+  }
+  throw new DecodeError('Provided value was not in the list of possible literals for enum');
+};
+
+export const matchingEnum = <T>(values: any[], decoder: Decoder<any>): Decoder<T> => input => {
+  const decoded = decoder(input);
+
+  for (const value of values) {
+    if (decoded === value) {
+      return decoded as T;
+    }
+  }
+
+  throw new DecodeError('Provided value was not in the list of possible literals');
+};

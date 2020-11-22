@@ -24,8 +24,14 @@ export const decodeProperty =  (source: { [key: string]: any }, entityName: stri
 };
 
 export const decodeObject = <T>(entityName: string, callback: (property: PropertyDecoderHelper) => T, options?: DecodeOptions): Decoder<T> => input => {
-  if (testDecodeOptions(input, options)) {
-    return input;
+  try {
+    if (testDecodeOptions(input, options)) {
+      return input;
+    }
+  } catch(e) {
+    if (DecodeError.isDecodeError(e)) {
+      throw new DecodeError(`Error parsing ${entityName}`, e);
+    }
   }
 
   if (!isObjectLike(input)) {
