@@ -5,7 +5,7 @@ A functional, opinionated, TypeScript library for decoding arbitrary inputs into
 
 Some features of ts-decoder:
 
-* Functional-style: no classes, all operations are data-last for easier composition
+* Functional-style: no classes except for `DecodeError`, all operations are data-last for easier composition
 * Built in decoders for basic types: boolean, number, string and date
 * Support for typed array and iterable decoding
 * Support for object decoding

@@ -23,6 +23,11 @@ export const nullish = <T>(decoder: Decoder<T>): Decoder<T | undefined | null> =
   return decoder(value);
 }
 
+/**
+ * Decodes a number
+ * The function will throw a @type {DecodeError} if the value is not strictly a number
+ * @param value The value to decode
+ */
 export const decodeNumber: Decoder<number> = value => {
   if (typeof value !== 'number') {
     throw new DecodeError('Field is not a valid number');

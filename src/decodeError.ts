@@ -1,3 +1,6 @@
+/**
+ * Represents a type error while decoding
+ */
 export class DecodeError {
   static TAG = 'DecodeError__';
 
