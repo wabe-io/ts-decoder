@@ -35,7 +35,7 @@ describe('decodeObject', () => {
   it('throws an error including entity name', () => {
     const name = 'XX21DSADSA';
     try {
-      const decoder = decodeObject(name, xx => null);
+      const decoder = decodeObject(name, () => null);
       decoder(null);
       expect.fail('Expected exception to be thrown');
     } catch (e) {
@@ -48,7 +48,7 @@ describe('decodeObject', () => {
     const propName = 'prop1';
 
     try {
-      const dummyDecoder = (z: any) => { throw new DecodeError('test'); };
+      const dummyDecoder = () => { throw new DecodeError('test'); };
 
       const decoder = decodeObject(entityName, prop => ({
         zz: prop(propName, dummyDecoder),
