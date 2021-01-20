@@ -71,6 +71,12 @@ describe('decodeArray', () => {
     expect(decodedArray).to.not.include(3);
   });
 
+  it('can decode an homogeneous array with some failures without specifying requireAll', () => {
+    // Decoder fails with odd numbers
+    const failDecoder = () => { throw new DecodeError('XXX') };
+    decodeArray(failDecoder)([1,2,3]);
+  });
+
   it('can collect errors', () => {
     // Decoder fails with odd numbers
     const mockDecoder: Decoder<number> = () => {
