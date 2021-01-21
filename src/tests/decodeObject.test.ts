@@ -6,14 +6,6 @@ import { DecodeError } from '../decodeError';
 const expect = chai.expect;
 
 describe('decodeObject', () => {
-  it('can decode a null input', () => {
-    expect(decodeObject('', () => {}, { nullable: true })(null)).to.be.null;
-  });
-
-  it('can decode an undefined input', () => {
-    expect(decodeObject('', () => {}, { optional: true })(undefined)).to.be.undefined;
-  });
-
   it('throws on a null input', () => {
     expect(() => { decodeObject('', () => {})(null) }).to.throw();
   });

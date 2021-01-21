@@ -1,9 +1,7 @@
 import { DecodeError } from './decodeError';
 import { Decoder } from './decoder';
-import { DecodeOptions } from './decodeOptions';
-import { testDecodeOptions } from './testDecodeOptions';
 
-const isObjectLike = (value: any) => typeof value === 'object' && !Array.isArray(value);
+const isObjectLike = (value: any) => typeof value === 'object' && !Array.isArray(value) && value != null;
 
 export type PropertyDecoderHelper = <F>(name: string, decoder: Decoder<F>) => F;
 
@@ -23,17 +21,7 @@ export const decodeProperty =  (source: { [key: string]: any }, entityName: stri
   }
 };
 
-export const decodeObject = <T>(entityName: string, callback: (property: PropertyDecoderHelper) => T, options?: DecodeOptions): Decoder<T> => input => {
-  try {
-    if (testDecodeOptions(input, options)) {
-      return input;
-    }
-  } catch(e) {
-    if (DecodeError.isDecodeError(e)) {
-      throw new DecodeError(`Error parsing ${entityName}`, e);
-    }
-  }
-
+export const decodeObject = <T>(entityName: string, callback: (property: PropertyDecoderHelper) => T): Decoder<T> => input => {
   if (!isObjectLike(input)) {
     throw new DecodeError(`Can't convert input ${entityName} to object`);
   }
