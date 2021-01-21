@@ -5,7 +5,7 @@ const isObjectLike = (value: any) => typeof value === 'object' && !Array.isArray
 
 export type PropertyDecoderHelper = <F>(name: string, decoder: Decoder<F>) => F;
 
-export const decodeProperty =  (source: { [key: string]: any }, entityName: string): PropertyDecoderHelper => (name, decoder) => {
+export const decodeProperty = (source: { [key: string]: any }, entityName: string): PropertyDecoderHelper => (name, decoder) => {
   if (!isObjectLike(source)) {
     throw new DecodeError(`Can't convert source ${entityName} to object`);
   }
@@ -27,4 +27,4 @@ export const decodeObject = <T>(entityName: string, callback: (property: Propert
   }
 
   return callback(decodeProperty(input, entityName));
-}
+};

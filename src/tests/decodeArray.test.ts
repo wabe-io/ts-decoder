@@ -17,7 +17,6 @@ describe('decodeArray', () => {
   });
 
   it('can decode a non-array iterable', () => {
-    
     const iterable: Iterable<number> = {
       [Symbol.iterator]: () => {
         const a = [1,2,3,4];
@@ -105,7 +104,3 @@ describe('decodeArray', () => {
     expect(() => { decodeArray(identity)(null) }).to.throw();
   });
 });
-
-
-
-
