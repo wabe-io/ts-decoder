@@ -86,4 +86,26 @@ describe('decodeObject', () => {
 
     expect(obj).to.equal(decoded);
   });
+
+  it('uses the getter if provided', () => {
+    const value = 'XASJD';
+    type X = { x: string };
+    const dummyGetter = () => () => value;
+    const dummyDecoder = (x: any) => x;
+    const decoded = decodeObject<X>('', prop => ({
+      x: prop('', dummyDecoder, dummyGetter),
+    }))({});
+    expect(decoded.x).to.equal(value);
+  });
+
+  it('forwards the key to the getter if provided', () => {
+    const value = 'XASJD';
+    type X = { x: string };
+    const dummyGetter = (key: string) => () => key;
+    const dummyDecoder = (x: any) => x;
+    const decoded = decodeObject<X>('', prop => ({
+      x: prop(value, dummyDecoder, dummyGetter),
+    }))({});
+    expect(decoded.x).to.equal(value);
+  });
 });
