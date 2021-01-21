@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import * as chai from 'chai';
 import * as chaidt from 'chai-datetime';
+import { path } from 'ramda';
 import {
   fromJson,
   decodeObject,
@@ -48,4 +49,24 @@ describe('module', () => {
     const decoded = optional(decodeArray(decodeNumber))(array);
     expect(decoded).to.eql(array);
   });
+
+  it('can decode an object using a path', () => {
+    const value = 'DSADS';
+    const data = {
+      a: [
+        {},
+        {
+          b: {
+            x: value,
+          },
+        },
+      ],
+    };
+    type Data = { x: string };
+    const decoded = decodeObject<Data>('', prop => ({
+      x: prop('', decodeString, path(['a', '1', 'b', 'x'])),
+    }))(data);
+    expect(decoded.x).to.equal(value);
+  });
 });
+

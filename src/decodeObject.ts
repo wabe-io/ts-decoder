@@ -3,23 +3,26 @@ import { Decoder } from './decoder';
 
 const isObjectLike = (value: any) => typeof value === 'object' && !Array.isArray(value) && value != null;
 
-export type PropertyGetter = (key: string) => (input: any) => any;
+export type PropertyGetter = (input: any) => any;
 
-export type PropertyDecoderHelper = <F>(nameOrKey: string, decoder: Decoder<F>, getter?: PropertyGetter) => F;
+export type PropertyDecoderHelper = <F>(propertyName: string, decoder: Decoder<F>, getter?: PropertyGetter) => F;
 
-export const decodeProperty = (source: { [key: string]: any }, entityName: string): PropertyDecoderHelper => (nameOrKey, decoder, getter?: PropertyGetter) => {
+export const decodeProperty = (source: { [key: string]: any }, entityName: string): PropertyDecoderHelper => (propertyName: string, decoder, getter?: PropertyGetter) => {
   if (!isObjectLike(source)) {
     throw new DecodeError(`Can't convert source ${entityName} to object`);
   }
 
   try {
-    const value = getter != null ? getter(nameOrKey)(source) : source[nameOrKey];
+    const value = getter != null
+      ? getter(source)
+      : source[propertyName];
+
     return decoder(value);
   } catch (e) {
     if (DecodeError.isDecodeError(e)) {
-      throw new DecodeError(`Error in ${entityName}.${nameOrKey}. Data: ${JSON.stringify(source)}`, e);
+      throw new DecodeError(`Error in ${entityName}.${propertyName}. Data: ${JSON.stringify(source)}`, e);
     }
-    throw new DecodeError(`Uknown error in ${entityName}.${nameOrKey}. }. Data: ${JSON.stringify(source)}. Error: ${e}`);
+    throw new DecodeError(`Uknown error in ${entityName}.${propertyName}. }. Data: ${JSON.stringify(source)}. Error: ${e}`);
   }
 };
 
