@@ -15,12 +15,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mindwards/ts-decoder.git"
+    "url": "git@github.com:wabe-io/ts-decoder.git"
   },
   "bugs": {
-    "url": "https://github.com/mindwards/ts-decoder/issues"
+    "url": "https://github.com/wabe-io/ts-decoder/issues"
   },
-  "homepage": "https://github.com/mindwards/ts-decoder",
+  "homepage": "https://github.com/wabe-io/ts-decoder",
   "author": "Hernán Pentimalli <h.pentimalli+tsdecoder@gmail.com>",
   "license": "MIT",
   "keywords": [
