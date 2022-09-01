@@ -11,7 +11,8 @@
     "typecheck": "./node_modules/.bin/tsc --noEmit",
     "circular-deps": "madge -c --extensions \"ts,tsx\" --ts-config=tsconfig.json src/",
     "link": "npm run build && cd dist && npm link",
-    "verify": "yarn typecheck && yarn circular-deps && yarn prettier && yarn test"
+    "verify": "yarn typecheck && yarn circular-deps && yarn prettier && yarn test",
+    "prepublishOnly": "yarn verify && yarn build"
   },
   "repository": {
     "type": "git",
