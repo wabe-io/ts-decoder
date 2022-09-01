@@ -7,7 +7,11 @@
   "scripts": {
     "test": "./node_modules/.bin/ts-mocha -p ./tsconfig.json src/**/*.test.ts",
     "build": "./node_modules/.bin/tsc",
-    "link": "npm run build && cd dist && npm link"
+    "prettier": "prettier --check .",
+    "typecheck": "./node_modules/.bin/tsc --noEmit",
+    "circular-deps": "madge -c --extensions \"ts,tsx\" --ts-config=tsconfig.json src/",
+    "link": "npm run build && cd dist && npm link",
+    "verify": "yarn typecheck && yarn circular-deps && yarn prettier && yarn test"
   },
   "repository": {
     "type": "git",
@@ -31,7 +35,9 @@
     "@types/ramda": "^0.27.14",
     "chai": "^4.2.0",
     "chai-datetime": "^1.7.0",
+    "madge": "^5.0.1",
     "mocha": "^8.1.1",
+    "prettier": "^2.7.1",
     "ramda": "^0.27.1",
     "ts-mocha": "^7.0.0",
     "ts-node": "^9.0.0",

@@ -71,15 +71,21 @@ describe('decodeNumber', () => {
   });
 
   it('throws when decoding an string', () => {
-    expect(() => { decodeNumber('0')}).to.throw();
+    expect(() => {
+      decodeNumber('0');
+    }).to.throw();
   });
 
   it('throws when decoding an optional value', () => {
-    expect(() => { decodeNumber(undefined)}).to.throw();
+    expect(() => {
+      decodeNumber(undefined);
+    }).to.throw();
   });
 
   it('throws when decoding an null value', () => {
-    expect(() => { decodeNumber(null)}).to.throw();
+    expect(() => {
+      decodeNumber(null);
+    }).to.throw();
   });
 });
 
@@ -102,15 +108,21 @@ describe('decodeForcedNumber', () => {
   });
 
   it('throws when decoding an optional value', () => {
-    expect(() => { decodeForcedNumber(undefined)}).to.throw();
+    expect(() => {
+      decodeForcedNumber(undefined);
+    }).to.throw();
   });
 
   it('throws when decoding an null value', () => {
-    expect(() => { decodeForcedNumber(null)}).to.throw();
+    expect(() => {
+      decodeForcedNumber(null);
+    }).to.throw();
   });
 
   it('throws when force decoding a non-numeric value', () => {
-    expect(() => { decodeForcedNumber('')}).to.throw();
+    expect(() => {
+      decodeForcedNumber('');
+    }).to.throw();
   });
 });
 
@@ -121,15 +133,21 @@ describe('decodeString', () => {
   });
 
   it('throws when decoding an non string', () => {
-    expect(() => { decodeString(3)}).to.throw();
+    expect(() => {
+      decodeString(3);
+    }).to.throw();
   });
 
   it('throws when decoding an optional value', () => {
-    expect(() => { decodeString(undefined)}).to.throw();
+    expect(() => {
+      decodeString(undefined);
+    }).to.throw();
   });
 
   it('throws when decoding an null value', () => {
-    expect(() => { decodeString(null)}).to.throw();
+    expect(() => {
+      decodeString(null);
+    }).to.throw();
   });
 });
 
@@ -171,15 +189,21 @@ describe('decodeBoolean', () => {
   });
 
   it('throws when decoding an non boolean', () => {
-    expect(() => { decodeBoolean(3)}).to.throw();
+    expect(() => {
+      decodeBoolean(3);
+    }).to.throw();
   });
 
   it('throws when decoding an optional value', () => {
-    expect(() => { decodeBoolean(undefined)}).to.throw();
+    expect(() => {
+      decodeBoolean(undefined);
+    }).to.throw();
   });
 
   it('throws when decoding an null value', () => {
-    expect(() => { decodeBoolean(null)}).to.throw();
+    expect(() => {
+      decodeBoolean(null);
+    }).to.throw();
   });
 });
 
@@ -250,15 +274,21 @@ describe('decodeDate', () => {
   });
 
   it('throws when decoding a non-date', () => {
-    expect(() => { decodeDate(43) }).to.throw();
+    expect(() => {
+      decodeDate(43);
+    }).to.throw();
   });
 
   it('throws when decoding null', () => {
-    expect(() => { decodeDate(null) }).to.throw();
+    expect(() => {
+      decodeDate(null);
+    }).to.throw();
   });
 
   it('throws when decoding undefined', () => {
-    expect(() => { decodeDate(undefined) }).to.throw();
+    expect(() => {
+      decodeDate(undefined);
+    }).to.throw();
   });
 });
 

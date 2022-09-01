@@ -1,4 +1,4 @@
 export type DecodeArrayOptions = {
   requireAll?: boolean;
-  errorCollector?: (error: any) => void,
-}
+  errorCollector?: (error: any) => void;
+};

@@ -7,17 +7,21 @@ const expect = chai.expect;
 
 describe('decodeObject', () => {
   it('throws on a null input', () => {
-    expect(() => { decodeObject('', () => {})(null) }).to.throw();
+    expect(() => {
+      decodeObject('', () => {})(null);
+    }).to.throw();
   });
 
   it('throws on a undefined input', () => {
-    expect(() => { decodeObject('', () => {})(undefined) }).to.throw();
+    expect(() => {
+      decodeObject('', () => {})(undefined);
+    }).to.throw();
   });
 
   it('calls the callback', () => {
     let calls = 0;
     decodeObject<{}>('', () => {
-      calls ++;
+      calls++;
       return {};
     })({});
 
@@ -40,9 +44,11 @@ describe('decodeObject', () => {
     const propName = 'prop1';
 
     try {
-      const dummyDecoder = () => { throw new DecodeError('test'); };
+      const dummyDecoder = () => {
+        throw new DecodeError('test');
+      };
 
-      const decoder = decodeObject(entityName, prop => ({
+      const decoder = decodeObject(entityName, (prop) => ({
         zz: prop(propName, dummyDecoder),
       }));
 
@@ -60,13 +66,15 @@ describe('decodeObject', () => {
     const prop2Name = 'prop2';
 
     try {
-      const failDecoder = (z: any) => { throw new DecodeError('test'); };
+      const failDecoder = (z: any) => {
+        throw new DecodeError('test');
+      };
 
-      const decoder2 = decodeObject(entity2Name, prop => ({
+      const decoder2 = decodeObject(entity2Name, (prop) => ({
         zz: prop(prop2Name, failDecoder),
       }));
 
-      const decoder1 = decodeObject(entity1Name, prop => ({
+      const decoder1 = decodeObject(entity1Name, (prop) => ({
         prop1: prop(prop1Name, decoder2),
       }));
 
@@ -92,7 +100,7 @@ describe('decodeObject', () => {
     type X = { x: string };
     const dummyGetter = () => value;
     const dummyDecoder = (x: any) => x;
-    const decoded = decodeObject<X>('', prop => ({
+    const decoded = decodeObject<X>('', (prop) => ({
       x: prop('', dummyDecoder, dummyGetter),
     }))({});
     expect(decoded.x).to.equal(value);

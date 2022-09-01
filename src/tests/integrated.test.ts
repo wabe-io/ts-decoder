@@ -30,10 +30,10 @@ describe('module', () => {
       someString: 'someStringxxx',
       someBoolean: true,
       someDate: new Date(),
-      someArray: [1,2,3],
+      someArray: [1, 2, 3],
     };
     const json = JSON.stringify(originalObj);
-    const decodeMock = decodeObject<MockObj>('MockEntity', properties => ({
+    const decodeMock = decodeObject<MockObj>('MockEntity', (properties) => ({
       someNumber: properties('someNumber', decodeNumber),
       someString: properties('someString', decodeString),
       someBoolean: properties('someBoolean', decodeBoolean),
@@ -45,7 +45,7 @@ describe('module', () => {
   });
 
   it('can decode an optional array', () => {
-    const array = [1,2,3];
+    const array = [1, 2, 3];
     const decoded = optional(decodeArray(decodeNumber))(array);
     expect(decoded).to.eql(array);
   });
@@ -63,10 +63,9 @@ describe('module', () => {
       ],
     };
     type Data = { x: string };
-    const decoded = decodeObject<Data>('', prop => ({
+    const decoded = decodeObject<Data>('', (prop) => ({
       x: prop('', decodeString, path(['a', '1', 'b', 'x'])),
     }))(data);
     expect(decoded.x).to.equal(value);
   });
 });
-
