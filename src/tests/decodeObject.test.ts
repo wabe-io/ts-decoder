@@ -2,6 +2,7 @@ import { describe, it } from 'mocha';
 import * as chai from 'chai';
 import { decodeObject } from '../decodeObject';
 import { DecodeError } from '../decodeError';
+import { decodeNumber } from '../baseDecoders';
 
 const expect = chai.expect;
 
@@ -70,12 +71,12 @@ describe('decodeObject', () => {
         throw new DecodeError('test');
       };
 
-      const decoder2 = decodeObject(entity2Name, (prop) => ({
-        zz: prop(prop2Name, failDecoder),
+      const decoder2 = decodeObject(entity2Name, (p) => ({
+        zz: p(prop2Name, failDecoder),
       }));
 
-      const decoder1 = decodeObject(entity1Name, (prop) => ({
-        prop1: prop(prop1Name, decoder2),
+      const decoder1 = decodeObject(entity1Name, (p) => ({
+        prop1: p(prop1Name, decoder2),
       }));
 
       decoder1({ prop1: { prop2: null } });
@@ -100,9 +101,51 @@ describe('decodeObject', () => {
     type X = { x: string };
     const dummyGetter = () => value;
     const dummyDecoder = (x: any) => x;
-    const decoded = decodeObject<X>('', (prop) => ({
-      x: prop('', dummyDecoder, dummyGetter),
+    const decoded = decodeObject<X>('', (p) => ({
+      x: p('', dummyDecoder, dummyGetter),
     }))({});
     expect(decoded.x).to.equal(value);
+  });
+
+  it('uses the default getter', () => {
+    interface Foo {
+      bar: number;
+    }
+
+    const foo = decodeObject<Foo>('', (p) => ({
+      bar: p('bar', (x) => x),
+    }))({ bar: 11 });
+
+    expect(foo.bar).to.eq(11);
+  });
+
+  it('decodes a nested object', () => {
+    interface Foo {
+      bar: {
+        baz: number;
+      };
+    }
+
+    const foo = decodeObject<Foo>('', (p) => ({
+      bar: p(
+        'bar',
+        decodeObject('', (pp) => ({
+          baz: pp('baz', decodeNumber),
+        })),
+      ),
+    }))({ bar: { baz: 11 } });
+
+    expect(foo.bar.baz).to.eq(11);
+  });
+
+  it('decodes and flattens a nested object', () => {
+    interface Foo {
+      baz: number;
+    }
+
+    const foo = decodeObject<Foo>('foo', (p) => ({
+      baz: p('bar.baz', decodeNumber),
+    }))({ bar: { baz: 11 } });
+    expect(foo.baz).to.eq(11);
   });
 });

@@ -4,24 +4,39 @@ import { Decoder } from './decoder';
 const isObjectLike = (value: any) =>
   typeof value === 'object' && !Array.isArray(value) && value != null;
 
-export type PropertyGetter = (input: any) => any;
+type PropertyGetter = (input: any, fieldName: string) => any;
 
-export type PropertyDecoderHelper = <F>(
+export const literalGetter: PropertyGetter = (input, fieldName) =>
+  input[fieldName];
+
+export const nestedGetter: PropertyGetter = (input, fieldName) => {
+  if (fieldName.includes('.')) {
+    const parts = fieldName.split('.');
+    let val = input;
+    for (const part of parts) {
+      val = val[part];
+    }
+    return val;
+  } else {
+    return input[fieldName];
+  }
+};
+
+type PropertyDecoderHelper = <F>(
   propertyName: string,
   decoder: Decoder<F>,
   getter?: PropertyGetter,
 ) => F;
 
-export const decodeProperty =
+const decodeProperty =
   (source: { [key: string]: any }, entityName: string): PropertyDecoderHelper =>
-  (propertyName: string, decoder, getter?: PropertyGetter) => {
+  (propertyName: string, decoder, getter: PropertyGetter = nestedGetter) => {
     if (!isObjectLike(source)) {
       throw new DecodeError(`Can't convert source ${entityName} to object`);
     }
 
     try {
-      const value = getter != null ? getter(source) : source[propertyName];
-
+      const value = getter(source, propertyName);
       return decoder(value);
     } catch (e) {
       if (DecodeError.isDecodeError(e)) {

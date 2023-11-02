@@ -62,7 +62,7 @@ describe('decodeUnion', () => {
     expect(i).to.equal(aOrBOrCDecoder(i));
   });
 
-  it('Can thows on non-exhaustive decoding', () => {
+  it('Can throw on non-exhaustive decoding', () => {
     type A = string;
     const dummyDecoder: Decoder<A> = (input: any) => input as any as A;
 
