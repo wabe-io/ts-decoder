@@ -41,7 +41,7 @@ describe('decodeArray', () => {
   });
 
   it('can decode an homogeneous array requiring all', () => {
-    const numberArrayDecoder = decodeArray(identity, { requireAll: true });
+    const numberArrayDecoder = decodeArray(identity);
     const testArray = [1, 2, 3, 4];
     expect(numberArrayDecoder(testArray)).to.include.ordered.members(testArray);
   });
@@ -50,7 +50,7 @@ describe('decodeArray', () => {
     const mockDecoder: Decoder<number> = () => {
       throw new Error();
     };
-    const numberArrayDecoder = decodeArray(mockDecoder, { requireAll: true });
+    const numberArrayDecoder = decodeArray(mockDecoder);
     const testArray = [1, 2, 3, 4];
 
     expect(() => {
@@ -66,7 +66,9 @@ describe('decodeArray', () => {
       }
       return input;
     };
-    const numberArrayDecoder = decodeArray(mockDecoder, { requireAll: false });
+    const numberArrayDecoder = decodeArray(mockDecoder, {
+      continueOnError: true,
+    });
     const testArray = [1, 2, 3, 4];
     const decodedArray = numberArrayDecoder(testArray);
     expect(decodedArray).to.include.members([2, 4]);
@@ -74,12 +76,14 @@ describe('decodeArray', () => {
     expect(decodedArray).to.not.include(3);
   });
 
-  it('can decode an homogeneous array with some failures without specifying requireAll', () => {
+  it('can throw when decoding an homogeneous array with some failures without specifying continueOnError = true', () => {
     // Decoder fails with odd numbers
     const failDecoder = () => {
       throw new DecodeError('XXX');
     };
-    decodeArray(failDecoder)([1, 2, 3]);
+    expect(() => {
+      decodeArray(failDecoder)([1, 2, 3]);
+    }).to.throw();
   });
 
   it('can collect errors', () => {
@@ -89,7 +93,7 @@ describe('decodeArray', () => {
     };
     const errors: any[] = [];
     const numberArrayDecoder = decodeArray(mockDecoder, {
-      requireAll: false,
+      continueOnError: true,
       errorCollector: (i) => errors.push(i),
     });
     const testArray = [1, 2, 3, 4];
@@ -103,9 +107,10 @@ describe('decodeArray', () => {
       throw new Error();
     };
     expect(() => {
-      decodeArray(mockDecoder, { requireAll: false, errorCollector: () => {} })(
-        [1],
-      );
+      decodeArray(mockDecoder, {
+        continueOnError: true,
+        errorCollector: () => {},
+      })([1]);
     }).to.throw();
   });
 

@@ -27,7 +27,7 @@ export const decodeArray =
         try {
           return itemDecoder(item);
         } catch (e) {
-          if (options?.requireAll || !DecodeError.isDecodeError(e)) {
+          if (!options?.continueOnError || !DecodeError.isDecodeError(e)) {
             throw e;
           }
 
