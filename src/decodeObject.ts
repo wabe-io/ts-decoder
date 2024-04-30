@@ -22,7 +22,7 @@ export const nestedGetter: PropertyGetter = (input, fieldName) => {
   }
 };
 
-type PropertyDecoderHelper = <F>(
+export type PropertyDecoderHelper = <F>(
   propertyName: string,
   decoder: Decoder<F>,
   getter?: PropertyGetter,
